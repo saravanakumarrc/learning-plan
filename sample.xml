@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE POWERMART SYSTEM "powrmart.dtd">
+<POWERMART CREATION_DATE="07/14/2025 10:30:00" REPOSITORY_VERSION="9.6.1">
+    <REPOSITORY NAME="REP_DEV" VERSION="185" CODEPAGE="UTF-8">
+        <FOLDER NAME="DEMO_FOLDER" GROUP="" OWNER="developer" SHARED="NOT_SHARED" DESCRIPTION="Demo folder for XML transformation" PERMISSIONS="rwx---r--" UUID="12345678-1234-5678-9012-123456789012">
+            
+            <!-- Source Definition -->
+            <SOURCE BUSINESSNAME="" DATABASETYPE="Oracle" DBDNAME="ORCL" DESCRIPTION="Source Table A" NAME="TableA" OBJECTVERSION="1" OWNERNAME="SCOTT" VERSIONNUMBER="1">
+                <SOURCEFIELD BUSINESSNAME="" DATATYPE="varchar" DESCRIPTION="Column A1" FIELDNUMBER="1" FIELDPROPERTY="0" FIELDTYPE="ELEMITEM" HIDDEN="NO" KEYTYPE="NOT A KEY" LENGTH="100" LEVEL="0" NAME="A1" NULLABLE="NULL" OCCURS="0" OFFSET="0" PHYSICALLENGTH="100" PHYSICALOFFSET="0" PICTURETEXT="" PRECISION="0" SCALE="0" USAGE_FLAGS=""/>
+                <SOURCEFIELD BUSINESSNAME="" DATATYPE="varchar" DESCRIPTION="Column A2" FIELDNUMBER="2" FIELDPROPERTY="0" FIELDTYPE="ELEMITEM" HIDDEN="NO" KEYTYPE="NOT A KEY" LENGTH="100" LEVEL="0" NAME="A2" NULLABLE="NULL" OCCURS="0" OFFSET="0" PHYSICALLENGTH="100" PHYSICALOFFSET="0" PICTURETEXT="" PRECISION="0" SCALE="0" USAGE_FLAGS=""/>
+            </SOURCE>
+            
+            <!-- Target Definition -->
+            <TARGET BUSINESSNAME="" CONSTRAINT="" DATABASETYPE="Oracle" DESCRIPTION="Target Table B" NAME="TableB" OBJECTVERSION="1" TABLEOPTIONS="">
+                <TARGETFIELD BUSINESSNAME="" DATATYPE="varchar" DESCRIPTION="Column B1" FIELDNUMBER="1" KEYTYPE="NOT A KEY" LENGTH="100" NAME="B1" NULLABLE="NULL" PICTURETEXT="" PRECISION="0" SCALE="0"/>
+                <TARGETFIELD BUSINESSNAME="" DATATYPE="varchar" DESCRIPTION="Column B2" FIELDNUMBER="2" KEYTYPE="NOT A KEY" LENGTH="100" NAME="B2" NULLABLE="NULL" PICTURETEXT="" PRECISION="0" SCALE="0"/>
+            </TARGET>
+            
+            <!-- Transformation (Source Qualifier) -->
+            <TRANSFORMATION DESCRIPTION="Source Qualifier for TableA" NAME="SQ_TableA" OBJECTVERSION="1" REUSABLE="NO" TYPE="Source Qualifier" VERSIONNUMBER="1">
+                <GROUP DESCRIPTION="" NAME="INPUT" ORDER="1" TYPE="INPUT"/>
+                <GROUP DESCRIPTION="" NAME="OUTPUT" ORDER="2" TYPE="OUTPUT"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Source field A1" FIELDNUMBER="1" GROUP="OUTPUT" LENGTH="100" NAME="A1" PICTURETEXT="" PORTTYPE="OUTPUT" PRECISION="0" SCALE="0"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Source field A2" FIELDNUMBER="2" GROUP="OUTPUT" LENGTH="100" NAME="A2" PICTURETEXT="" PORTTYPE="OUTPUT" PRECISION="0" SCALE="0"/>
+                <TABLEATTRIBUTE NAME="Sql Query" VALUE="SELECT A1, A2 FROM TableA"/>
+            </TRANSFORMATION>
+            
+            <!-- Expression Transformation -->
+            <TRANSFORMATION DESCRIPTION="Expression to convert to uppercase" NAME="EXP_Uppercase" OBJECTVERSION="1" REUSABLE="NO" TYPE="Expression" VERSIONNUMBER="1">
+                <GROUP DESCRIPTION="" NAME="INPUT" ORDER="1" TYPE="INPUT"/>
+                <GROUP DESCRIPTION="" NAME="OUTPUT" ORDER="2" TYPE="OUTPUT"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Input A1" FIELDNUMBER="1" GROUP="INPUT" LENGTH="100" NAME="A1" PICTURETEXT="" PORTTYPE="INPUT" PRECISION="0" SCALE="0"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Input A2" FIELDNUMBER="2" GROUP="INPUT" LENGTH="100" NAME="A2" PICTURETEXT="" PORTTYPE="INPUT" PRECISION="0" SCALE="0"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Output B1 - uppercase A1" EXPRESSION="UPPER(A1)" FIELDNUMBER="3" GROUP="OUTPUT" LENGTH="100" NAME="B1" PICTURETEXT="" PORTTYPE="OUTPUT" PRECISION="0" SCALE="0"/>
+                <TRANSFORMFIELD DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Output B2 - uppercase A2" EXPRESSION="UPPER(A2)" FIELDNUMBER="4" GROUP="OUTPUT" LENGTH="100" NAME="B2" PICTURETEXT="" PORTTYPE="OUTPUT" PRECISION="0" SCALE="0"/>
+            </TRANSFORMATION>
+            
+            <!-- Mapping -->
+            <MAPPING DESCRIPTION="Mapping to transform TableA to TableB with uppercase" ISVALID="YES" NAME="m_TableA_to_TableB_Upper" OBJECTVERSION="1" VERSIONNUMBER="1">
+                
+                <!-- Source Instance -->
+                <SOURCE DESCRIPTION="" NAME="TableA" OBJECTVERSION="1" VERSIONNUMBER="1"/>
+                
+                <!-- Target Instance -->
+                <TARGET DESCRIPTION="" NAME="TableB" OBJECTVERSION="1" VERSIONNUMBER="1"/>
+                
+                <!-- Transformation Instances -->
+                <TRANSFORMATION DESCRIPTION="" NAME="SQ_TableA" OBJECTVERSION="1" REUSABLE="NO" TYPE="Source Qualifier" VERSIONNUMBER="1">
+                    <ASSOCIATED_SOURCE_INSTANCE NAME="TableA"/>
+                </TRANSFORMATION>
+                
+                <TRANSFORMATION DESCRIPTION="" NAME="EXP_Uppercase" OBJECTVERSION="1" REUSABLE="NO" TYPE="Expression" VERSIONNUMBER="1"/>
+                
+                <!-- Connectors/Links -->
+                <CONNECTOR FROMFIELD="A1" FROMINSTANCE="SQ_TableA" FROMINSTANCETYPE="Source Qualifier" TOFIELD="A1" TOINSTANCE="EXP_Uppercase" TOINSTANCETYPE="Expression"/>
+                <CONNECTOR FROMFIELD="A2" FROMINSTANCE="SQ_TableA" FROMINSTANCETYPE="Source Qualifier" TOFIELD="A2" TOINSTANCE="EXP_Uppercase" TOINSTANCETYPE="Expression"/>
+                <CONNECTOR FROMFIELD="B1" FROMINSTANCE="EXP_Uppercase" FROMINSTANCETYPE="Expression" TOFIELD="B1" TOINSTANCE="TableB" TOINSTANCETYPE="Target"/>
+                <CONNECTOR FROMFIELD="B2" FROMINSTANCE="EXP_Uppercase" FROMINSTANCETYPE="Expression" TOFIELD="B2" TOINSTANCE="TableB" TOINSTANCETYPE="Target"/>
+                
+                <!-- Mapping Variables (if any) -->
+                <MAPVAR DATATYPE="varchar" DEFAULTVALUE="" DESCRIPTION="Mapping variable example" ISPERSISTENT="NO" NAME="$$MapVar_Example" PRECISION="0" SCALE="0" USERDEFINED="YES"/>
+                
+            </MAPPING>
+            
+            <!-- Session -->
+            <SESSION DESCRIPTION="Session to run the mapping" ISVALID="YES" MAPPINGNAME="m_TableA_to_TableB_Upper" NAME="s_TableA_to_TableB_Upper" REUSABLE="NO" SORTORDER="Binary">
+                <SESSTRANSFORMATION INSTANCENAME="SQ_TableA" PARTITIONTYPE="PASS THROUGH" TRANSFORMATIONNAME="SQ_TableA" TRANSFORMATIONTYPE="Source Qualifier"/>
+                <SESSTRANSFORMATION INSTANCENAME="EXP_Uppercase" PARTITIONTYPE="PASS THROUGH" TRANSFORMATIONNAME="EXP_Uppercase" TRANSFORMATIONTYPE="Expression"/>
+                <SESSTRANSFORMATION INSTANCENAME="TableB" PARTITIONTYPE="PASS THROUGH" TRANSFORMATIONNAME="TableB" TRANSFORMATIONTYPE="Target"/>
+                
+                <!-- Session Configuration -->
+                <CONFIGREFERENCE REFOBJECTNAME="default_session_config" TYPE="Session config"/>
+                
+                <!-- Connection Information -->
+                <SESSIONEXTENSION DSQINSTNAME="SQ_TableA" DSRCNAME="TableA" NAME="Relational Reader" SINSTNAME="SQ_TableA" SRCTABLENAME="TableA" TRANSFORMATIONTYPE="Source Qualifier" TYPE="READER">
+                    <CONNECTIONREFERENCE CNXREFNAME="Oracle_Connection" CONNECTIONNAME="Oracle_Connection" CONNECTIONSUBTYPE="Oracle" CONNECTIONTYPE="Relational" VARIABLE=""/>
+                </SESSIONEXTENSION>
+                
+                <SESSIONEXTENSION NAME="Relational Writer" SINSTNAME="TableB" TRANSFORMATIONTYPE="Target" TYPE="WRITER">
+                    <CONNECTIONREFERENCE CNXREFNAME="Oracle_Connection" CONNECTIONNAME="Oracle_Connection" CONNECTIONSUBTYPE="Oracle" CONNECTIONTYPE="Relational" VARIABLE=""/>
+                </SESSIONEXTENSION>
+                
+                <!-- Session Properties -->
+                <ATTRIBUTE NAME="General Options" VALUE=""/>
+                <ATTRIBUTE NAME="Write Backward Compatible Session Log" VALUE="NO"/>
+                <ATTRIBUTE NAME="Session Log File Name" VALUE="s_TableA_to_TableB_Upper.log"/>
+                <ATTRIBUTE NAME="Session Log File Directory" VALUE="$PMSessionLogDir"/>
+                <ATTRIBUTE NAME="Parameter Filename" VALUE=""/>
+                <ATTRIBUTE NAME="Enable Test Load" VALUE="NO"/>
+                
+            </SESSION>
+            
+            <!-- Workflow -->
+            <WORKFLOW DESCRIPTION="Workflow to execute the session" ISVALID="YES" NAME="wf_TableA_to_TableB_Transform" REUSABLE="NO" SCHEDULEREUSABLE="NO" SERVERNAME="" SERVERVERSION="" SUSPEND_ON_ERROR="NO" TASKS_MUST_RUN_ON_SERVER="NO">
+                <WORKFLOWVARIABLE DATATYPE="text" DEFAULTVALUE="" DESCRIPTION="Workflow variable" ISPERSISTENT="NO" NAME="$$WorkflowVar_Example" USERDEFINED="YES"/>
+                
+                <!-- Session Task -->
+                <TASK DESCRIPTION="Session task" NAME="s_TableA_to_TableB_Upper" REUSABLE="NO" TYPE="Session" VERSIONNUMBER="1">
+                    <SESSIONEXTENSION DSQINSTNAME="SQ_TableA" DSRCNAME="TableA" NAME="Relational Reader" SINSTNAME="SQ_TableA" TRANSFORMATIONTYPE="Source Qualifier" TYPE="READER"/>
+                    <SESSIONEXTENSION NAME="Relational Writer" SINSTNAME="TableB" TRANSFORMATIONTYPE="Target" TYPE="WRITER"/>
+                </TASK>
+                
+                <!-- Task Instance -->
+                <TASKINSTANCE DESCRIPTION="Task instance for session" NAME="s_TableA_to_TableB_Upper" REUSABLE="NO" TASKNAME="s_TableA_to_TableB_Upper" TASKTYPE="Session"/>
+                
+                <!-- Workflow Links -->
+                <WORKFLOWLINK CONDITION="" FROMTASK="Start" TOTASK="s_TableA_to_TableB_Upper"/>
+                
+            </WORKFLOW>
+            
+        </FOLDER>
+    </REPOSITORY>
+</POWERMART>
